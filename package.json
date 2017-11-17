@@ -1,0 +1,13 @@
+{
+  "name": "@scola/validator",
+  "version": "7.0.0",
+  "description": "Validator",
+  "repository": "github:scola84/validator",
+  "author": "M.C. van den Boogaart <scola@kvdb.name>",
+  "license": "MIT",
+  "main": "./index.js",
+  "jsnext:main": "./index.js",
+  "dependencies": {
+    "@scola/worker": "^1.0.0"
+  }
+}
