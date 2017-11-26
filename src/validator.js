@@ -1,11 +1,15 @@
 import { Worker } from '@scola/worker';
+import CheckboxValidator from './validator/checkbox';
 import EmailValidator from './validator/email';
 import IntegerValidator from './validator/integer';
+import PasswordValidator from './validator/password';
 import TextValidator from './validator/text';
 
 const validators = {
+  checkbox: new CheckboxValidator(),
   email: new EmailValidator(),
   integer: new IntegerValidator(),
+  password: new PasswordValidator(),
   text: new TextValidator()
 };
 
@@ -13,7 +17,7 @@ export default class Validator extends Worker {
   constructor(methods) {
     super(methods);
 
-    this._filter = (m, d) => d;
+    this._filter = (box, data) => data;
     this._structure = null;
   }
 
@@ -27,15 +31,15 @@ export default class Validator extends Worker {
     return this;
   }
 
-  act(message, data, callback) {
+  act(box, data, callback) {
     this._structure
       .filter((section) => section.fields)
       .forEach((section) => {
         this._validateFields(section.fields,
-          this._filter(message, data));
+          this._filter(box, data));
       });
 
-    this.pass(message, data, callback);
+    this.pass(box, data, callback);
   }
 
   _throwError(reason, field) {
@@ -62,14 +66,14 @@ export default class Validator extends Worker {
 
   _validateRequired(field, value) {
     if (typeof value !== 'string' || value.length === 0) {
-      this._throwError('Field is empty', field);
+      this._throwError('empty', field);
     }
   }
 
   _validateType(field, value) {
     if (validators[field.type]) {
       if (validators[field.type].validate(field, value) === false) {
-        this._throwError('Field is invalid', field);
+        this._throwError('type', field);
       }
     }
   }

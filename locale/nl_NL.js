@@ -1,10 +1,10 @@
 export default {
   error: {
     long: {
-      400: 'Het veld "%s" mag niet leeg zijn'
-    },
-    short: {
-      400: 'Het veld "%s" moet %s zijn'
+      400: {
+        empty: 'Het veld "%s" mag niet leeg zijn',
+        type: 'Het veld "%s" moet %s zijn'
+      }
     }
   },
   validator: {
