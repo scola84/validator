@@ -16,14 +16,7 @@ const validators = {
 export default class Validator extends Worker {
   constructor(methods) {
     super(methods);
-
-    this._filter = (box, data) => data;
     this._structure = null;
-  }
-
-  setFilter(value) {
-    this._filter = value;
-    return this;
   }
 
   setStructure(value) {
@@ -35,8 +28,7 @@ export default class Validator extends Worker {
     this._structure
       .filter((section) => section.fields)
       .forEach((section) => {
-        this._validateFields(section.fields,
-          this._filter(box, data));
+        this._validateFields(section.fields, this.filter(box, data));
       });
 
     this.pass(box, data, callback);
