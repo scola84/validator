@@ -45,6 +45,8 @@ export default class Validator extends Worker {
   _validateField(field, value) {
     if (field.required === true) {
       this._validateRequired(field, value);
+    } else if (typeof value === 'undefined') {
+      return;
     }
 
     this._validateType(field, value);
