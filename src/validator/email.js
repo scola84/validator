@@ -14,7 +14,7 @@ export default class EmailValidator {
       return false;
     }
 
-    return true;
+    return value;
   }
 
   _validateDomain(domain) {

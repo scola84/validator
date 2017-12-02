@@ -3,6 +3,7 @@ import CheckboxValidator from './validator/checkbox';
 import EmailValidator from './validator/email';
 import IntegerValidator from './validator/integer';
 import PasswordValidator from './validator/password';
+import RegexpValidator from './validator/regexp';
 import TextValidator from './validator/text';
 
 const validators = {
@@ -10,6 +11,7 @@ const validators = {
   email: new EmailValidator(),
   integer: new IntegerValidator(),
   password: new PasswordValidator(),
+  regexp: new RegexpValidator(),
   text: new TextValidator()
 };
 
@@ -25,10 +27,12 @@ export default class Validator extends Worker {
   }
 
   act(box, data, callback) {
+    data = this.filter(box, data);
+
     this._structure
       .filter((section) => section.fields)
       .forEach((section) => {
-        this._validateFields(section.fields, this.filter(box, data));
+        this._validateFields(section.fields, data);
       });
 
     this.pass(box, data, callback);
@@ -42,33 +46,58 @@ export default class Validator extends Worker {
     throw error;
   }
 
-  _validateField(field, value) {
-    if (field.required === true) {
-      this._validateRequired(field, value);
-    } else if (typeof value === 'undefined') {
+  _validateField(field, data) {
+    const value = data[field.name];
+
+    if (typeof value === 'undefined') {
+      if (field.required === true) {
+        this._validateRequired(field, value);
+      } else if (typeof field.default !== 'undefined') {
+        data[field.name] = field.default;
+      }
+
       return;
     }
 
-    this._validateType(field, value);
+    if (field.array === true) {
+      data[field.name] = this._validateArray(field, value);
+      return;
+    }
+
+    data[field.name] = this._validateType(field, value);
+  }
+
+  _validateArray(field, value) {
+    if (Array.isArray(value) === false) {
+      return this._throwError('array', field);
+    }
+
+    for (let i = 0; i < value.length; i += 1) {
+      value[i] = this._validateType(field, value[i]);
+    }
+
+    return value;
   }
 
   _validateFields(fields, data) {
     fields.forEach((field) => {
-      this._validateField(field, data[field.name]);
+      this._validateField(field, data);
     });
   }
 
   _validateRequired(field, value) {
-    if (typeof value !== 'string' || value.length === 0) {
+    if (typeof value === 'undefined' || value.length === 0) {
       this._throwError('empty', field);
     }
   }
 
   _validateType(field, value) {
-    if (validators[field.type]) {
-      if (validators[field.type].validate(field, value) === false) {
-        this._throwError('type', field);
-      }
+    const result = validators[field.type].validate(field, value);
+
+    if (result === false) {
+      return this._throwError('type', field);
     }
+
+    return field.cast === true ? result : value;
   }
 }

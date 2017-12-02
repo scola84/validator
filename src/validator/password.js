@@ -1,5 +1,5 @@
 export default class PasswordValidator {
   validate(field, value) {
-    return typeof value === 'string';
+    return typeof value !== 'string' ? false : value;
   }
 }
