@@ -1,2 +1,7 @@
 import Validator from './src/validator';
-export { Validator };
+import locale from './src/locale/strings';
+
+export {
+  Validator,
+  locale
+};
