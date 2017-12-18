@@ -1,5 +1,5 @@
 import Validator from './src/validator';
-import locale from './src/locale/strings';
+import locale from './src/locale';
 
 export {
   Validator,
