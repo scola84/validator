@@ -16,12 +16,14 @@ const validators = {
 };
 
 export default class Validator extends Worker {
-  constructor(methods) {
-    super(methods);
+  constructor(options = {}) {
+    super(options);
+
     this._structure = null;
+    this.setStructure(options.structure);
   }
 
-  setStructure(value) {
+  setStructure(value = null) {
     this._structure = value;
     return this;
   }
