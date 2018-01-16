@@ -33,14 +33,6 @@ export default class Validator extends Worker {
       value === '';
   }
 
-  _throwError(reason, field) {
-    const error = new Error('400');
-    error.field = field;
-    error.reason = reason;
-
-    throw error;
-  }
-
   _checkArray(field, value) {
     if (Array.isArray(value) === false) {
       return this._throwError('array', field);
@@ -67,6 +59,14 @@ export default class Validator extends Worker {
     }
 
     return field.cast === true ? result : value;
+  }
+
+  _throwError(reason, field) {
+    const error = new Error('400');
+    error.field = field;
+    error.reason = reason;
+
+    throw error;
   }
 
   _validateField(field, data) {
