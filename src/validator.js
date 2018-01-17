@@ -17,11 +17,11 @@ export default class Validator extends Worker {
   act(box, data, callback) {
     const result = this.filter(box, data);
 
-    this._structure
-      .filter((section) => section.fields)
-      .forEach((section) => {
-        this._validateFields(section.fields, result);
-      });
+    for (let i = 0; i < this._structure.length; i += 1) {
+      if (this._structure[i].fields) {
+        this._validateFields(this._structure[i].fields, result);
+      }
+    }
 
     this.merge(box, data, result);
     this.pass(box, data, callback);
@@ -91,8 +91,8 @@ export default class Validator extends Worker {
   }
 
   _validateFields(fields, data) {
-    fields.forEach((field) => {
-      this._validateField(field, data);
-    });
+    for (let i = 0; i < fields.length; i += 1) {
+      this._validateField(fields[i], data);
+    }
   }
 }
