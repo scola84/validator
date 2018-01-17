@@ -1,4 +1,5 @@
 import CheckboxCheck from './checkbox';
+import DateCheck from './date';
 import EmailCheck from './email';
 import IntegerCheck from './integer';
 import PasswordCheck from './password';
@@ -7,6 +8,7 @@ import RegexpCheck from './regexp';
 import TextCheck from './text';
 
 export default {
+  date: new DateCheck(),
   checkbox: new CheckboxCheck(),
   email: new EmailCheck(),
   integer: new IntegerCheck(),

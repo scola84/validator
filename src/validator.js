@@ -35,7 +35,7 @@ export default class Validator extends Worker {
 
   _checkArray(field, value) {
     if (Array.isArray(value) === false) {
-      return this._throwError('array', field);
+      return this._throwError(field, 'array');
     }
 
     for (let i = 0; i < value.length; i += 1) {
@@ -47,7 +47,7 @@ export default class Validator extends Worker {
 
   _checkRequired(field, value) {
     if (typeof value === 'undefined' || value.length === 0) {
-      this._throwError('empty', field);
+      this._throwError(field, 'empty');
     }
   }
 
@@ -55,16 +55,21 @@ export default class Validator extends Worker {
     const result = check[field.type].check(field, value);
 
     if (result === false) {
-      return this._throwError('type', field);
+      return this._throwError(field, 'type');
     }
 
     return field.cast === true ? result : value;
   }
 
-  _throwError(reason, field) {
+  _throwError(field, reason) {
     const error = new Error('400');
+
     error.field = field;
     error.reason = reason;
+
+    if (field.type === 'checkbox' || field.type === 'radio') {
+      delete error.reason;
+    }
 
     throw error;
   }
