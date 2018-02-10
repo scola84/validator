@@ -27,12 +27,6 @@ export default class Validator extends Worker {
     this.pass(box, data, callback);
   }
 
-  _isEmpty(value) {
-    return typeof value === 'undefined' ||
-      value === null ||
-      value === '';
-  }
-
   _checkArray(field, value) {
     if (Array.isArray(value) === false) {
       return this._throwError(field, 'array');
@@ -43,6 +37,31 @@ export default class Validator extends Worker {
     }
 
     return value;
+  }
+
+  _checkLength(field, value) {
+    value = String(value);
+    const [min, max] = String(field.length).split('-');
+
+    console.log(max, value);
+
+    if (typeof max === 'undefined' && value.length !== Number(min)) {
+      this._throwError(field, 'length');
+    }
+
+    if (min && value.length < Number(min)) {
+      this._throwError(field, 'length');
+    }
+
+    if (max && value.length > Number(max)) {
+      this._throwError(field, 'length');
+    }
+  }
+
+  _checkRegexp(field, value) {
+    if (field.regexp.test(value) === false) {
+      this._throwError(field, 'regexp');
+    }
   }
 
   _checkRequired(field, value) {
@@ -59,6 +78,12 @@ export default class Validator extends Worker {
     }
 
     return field.cast === true ? result : value;
+  }
+
+  _isEmpty(value) {
+    return typeof value === 'undefined' ||
+      value === null ||
+      value === '';
   }
 
   _throwError(field, reason) {
@@ -85,6 +110,14 @@ export default class Validator extends Worker {
       }
 
       return;
+    }
+
+    if (field.length) {
+      this._checkLength(field, value);
+    }
+
+    if (field.regexp) {
+      this._checkRegexp(field, value);
     }
 
     if (field.array === true) {

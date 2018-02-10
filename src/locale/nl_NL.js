@@ -3,10 +3,12 @@ export default {
     error: {
       long: {
         400: {
-          checkbox: 'Selecteer minstens één %s.',
-          empty: 'Het veld "%s" mag niet leeg zijn.',
-          radio: 'Selecteer een %s.',
-          type: 'Het veld "%s" moet %s zijn.'
+          checkbox: 'Selecteer minstens één %(name)s.',
+          empty: 'Het veld "%(name)s" mag niet leeg zijn.',
+          length: 'Het veld "%(name)s" moet %(length)s tekens lang zijn.',
+          radio: 'Selecteer een %(name)s.',
+          regexp: 'Het veld "%(name)s" bevat een onjuiste waarde.',
+          type: 'Het veld "%(name)s" moet %(type)s zijn.'
         }
       }
     },
