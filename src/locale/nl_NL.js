@@ -16,6 +16,7 @@ export default {
       date: 'een datum',
       email: 'een e-mailadres',
       integer: 'een geheel getal',
+      select: 'ingevuld',
       text: 'een tekst'
     }
   }
