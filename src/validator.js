@@ -43,8 +43,6 @@ export default class Validator extends Worker {
     value = String(value);
     const [min, max] = String(field.length).split('-');
 
-    console.log(max, value);
-
     if (typeof max === 'undefined' && value.length !== Number(min)) {
       this._throwError(field, 'length');
     }
