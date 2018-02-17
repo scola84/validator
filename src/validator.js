@@ -56,6 +56,19 @@ export default class Validator extends Worker {
     }
   }
 
+  _checkRange(field, value) {
+    value = String(value);
+    const [min, max] = String(field.range).split('-');
+
+    if (min && Number(value) < Number(min)) {
+      this._throwError(field, 'range');
+    }
+
+    if (max && Number(value) > Number(max)) {
+      this._throwError(field, 'range');
+    }
+  }
+
   _checkRegexp(field, value) {
     if (field.regexp.test(value) === false) {
       this._throwError(field, 'regexp');
@@ -112,6 +125,10 @@ export default class Validator extends Worker {
 
     if (field.length) {
       this._checkLength(field, value);
+    }
+
+    if (field.range) {
+      this._checkRange(field, value);
     }
 
     if (field.regexp) {

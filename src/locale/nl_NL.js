@@ -7,6 +7,7 @@ export default {
           empty: 'Het veld "%(name)s" mag niet leeg zijn.',
           length: 'Het veld "%(name)s" moet %(length)s tekens lang zijn.',
           radio: 'Selecteer een %(name)s.',
+          range: 'Het veld "%(name)s" moet een waarde van %(range)s hebben.',
           regexp: 'Het veld "%(name)s" bevat een onjuiste waarde.',
           type: 'Het veld "%(name)s" moet %(type)s zijn.'
         }
@@ -17,7 +18,8 @@ export default {
       email: 'een e-mailadres',
       integer: 'een geheel getal',
       select: 'ingevuld',
-      text: 'een tekst'
+      text: 'een tekst',
+      textarea: 'een tekst'
     }
   }
 };

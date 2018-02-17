@@ -6,6 +6,7 @@ import PasswordCheck from './password';
 import RadioCheck from './password';
 import SelectCheck from './select';
 import TextCheck from './text';
+import TextareaCheck from './textarea';
 
 export default {
   date: new DateCheck(),
@@ -15,5 +16,6 @@ export default {
   password: new PasswordCheck(),
   radio: new RadioCheck(),
   select: new SelectCheck(),
-  text: new TextCheck()
+  text: new TextCheck(),
+  textarea: new TextareaCheck()
 };
