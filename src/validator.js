@@ -27,6 +27,14 @@ export default class Validator extends Worker {
     this.pass(box, data, callback);
   }
 
+  decide(box, data) {
+    if (this._decide) {
+      return this._decide(box, data);
+    }
+
+    return Array.isArray(this._structure);
+  }
+
   _checkArray(field, value) {
     if (Array.isArray(value) === false) {
       return this._throwError(field, 'array');
@@ -82,6 +90,18 @@ export default class Validator extends Worker {
   }
 
   _checkType(field, value) {
+    if (field.length) {
+      this._checkLength(field, value);
+    }
+
+    if (field.range) {
+      this._checkRange(field, value);
+    }
+
+    if (field.regexp) {
+      this._checkRegexp(field, value);
+    }
+
     const result = check[field.type].check(field, value);
 
     if (result === false) {
@@ -121,18 +141,6 @@ export default class Validator extends Worker {
       }
 
       return;
-    }
-
-    if (field.length) {
-      this._checkLength(field, value);
-    }
-
-    if (field.range) {
-      this._checkRange(field, value);
-    }
-
-    if (field.regexp) {
-      this._checkRegexp(field, value);
     }
 
     if (field.array === true) {
