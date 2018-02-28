@@ -1,6 +1,7 @@
 import CheckboxCheck from './checkbox';
 import DateCheck from './date';
 import EmailCheck from './email';
+import FileCheck from './file';
 import IntegerCheck from './integer';
 import PasswordCheck from './password';
 import RadioCheck from './password';
@@ -12,6 +13,7 @@ export default {
   date: new DateCheck(),
   checkbox: new CheckboxCheck(),
   email: new EmailCheck(),
+  file: new FileCheck(),
   integer: new IntegerCheck(),
   password: new PasswordCheck(),
   radio: new RadioCheck(),

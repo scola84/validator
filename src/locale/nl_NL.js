@@ -16,6 +16,7 @@ export default {
     type: {
       date: 'een datum',
       email: 'een e-mailadres',
+      file: 'een geldig bestand',
       integer: 'een geheel getal',
       select: 'ingevuld',
       text: 'een tekst',
