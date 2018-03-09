@@ -47,6 +47,14 @@ export default class Validator extends Worker {
     return value;
   }
 
+  _checkCustom(field, value, data) {
+    const result = field.custom(value, data);
+
+    if (result === false) {
+      this._throwError(field, 'custom');
+    }
+  }
+
   _checkLength(field, value) {
     value = String(value);
     const [min, max] = String(field.length).split('-');
@@ -89,20 +97,24 @@ export default class Validator extends Worker {
     }
   }
 
-  _checkType(field, value) {
+  _checkType(field, value, data) {
     if (field.length) {
-      this._checkLength(field, value);
+      this._checkLength(field, value, data);
     }
 
     if (field.range) {
-      this._checkRange(field, value);
+      this._checkRange(field, value, data);
     }
 
     if (field.regexp) {
-      this._checkRegexp(field, value);
+      this._checkRegexp(field, value, data);
     }
 
-    const result = check[field.type].check(field, value);
+    if (field.custom) {
+      this._checkCustom(field, value, data);
+    }
+
+    const result = check[field.type].check(field, value, data);
 
     if (result === false) {
       return this._throwError(field, 'type');
@@ -135,7 +147,7 @@ export default class Validator extends Worker {
 
     if (this._isEmpty(value) === true) {
       if (field.required === true) {
-        this._checkRequired(field, value);
+        this._checkRequired(field, value, data);
       } else if (typeof field.default !== 'undefined') {
         data[field.name] = field.default;
       }
@@ -144,11 +156,11 @@ export default class Validator extends Worker {
     }
 
     if (field.array === true) {
-      data[field.name] = this._checkArray(field, value);
+      data[field.name] = this._checkArray(field, value, data);
       return;
     }
 
-    data[field.name] = this._checkType(field, value);
+    data[field.name] = this._checkType(field, value, data);
   }
 
   _validateFields(fields, data) {
