@@ -27,6 +27,10 @@ export default class Validator extends Worker {
     this.pass(box, data, callback);
   }
 
+  decide() {
+    return typeof this._structure !== 'function';
+  }
+
   _checkArray(field, value) {
     if (Array.isArray(value) === false) {
       return this._throwError(field, 'array');
