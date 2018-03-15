@@ -27,7 +27,11 @@ export default class Validator extends Worker {
     this.pass(box, data, callback);
   }
 
-  decide() {
+  decide(box, data) {
+    if (this._decide) {
+      return this._decide(box, data);
+    }
+
     return typeof this._structure !== 'function';
   }
 
