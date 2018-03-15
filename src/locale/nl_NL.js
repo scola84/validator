@@ -7,7 +7,11 @@ export default {
           empty: 'Het veld "%(name)s" mag niet leeg zijn.',
           length: 'Het veld "%(name)s" moet %(length)s tekens lang zijn.',
           radio: 'Selecteer een %(name)s.',
-          range: 'Het veld "%(name)s" moet een waarde van %(range)s hebben.',
+          range: {
+            max: 'Het veld "%(name)s" mag niet groter dan %(max)s zijn.',
+            min: 'Het veld "%(name)s" mag niet kleiner dan %(min)s zijn.',
+            minmax: 'Het veld "%(name)s" moet een waarde tussen %(min)s en %(max)s zijn.'
+          },
           regexp: 'Het veld "%(name)s" bevat een onjuiste waarde.',
           type: 'Het veld "%(name)s" moet %(type)s zijn.'
         }

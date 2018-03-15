@@ -66,13 +66,13 @@ export default class Validator extends Worker {
 
   _checkRange(field, value) {
     value = String(value);
-    const [min, max] = String(field.range).split('-');
+    const [min, max] = field.range;
 
-    if (min && Number(value) < Number(min)) {
+    if (min !== null && Number(value) < min) {
       this._throwError(field, 'range');
     }
 
-    if (max && Number(value) > Number(max)) {
+    if (max !== null && Number(value) > max) {
       this._throwError(field, 'range');
     }
   }
