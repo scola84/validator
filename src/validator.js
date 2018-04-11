@@ -23,7 +23,8 @@ export default class Validator extends Worker {
       }
     }
 
-    this.merge(box, data, result);
+    data = this.merge(box, data, result);
+
     this.pass(box, data, callback);
   }
 
@@ -91,12 +92,6 @@ export default class Validator extends Worker {
     }
   }
 
-  _checkRequired(field, value) {
-    if (typeof value === 'undefined' || value.length === 0) {
-      this._throwError(field, 'empty');
-    }
-  }
-
   _checkType(field, value, data) {
     if (field.length) {
       this._checkLength(field, value, data);
@@ -147,7 +142,7 @@ export default class Validator extends Worker {
 
     if (this._isEmpty(value) === true) {
       if (field.required === true) {
-        this._checkRequired(field, value, data);
+        this._throwError(field, 'empty');
       } else if (typeof field.default !== 'undefined') {
         data[field.name] = field.default;
       }
