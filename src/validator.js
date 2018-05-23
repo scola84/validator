@@ -93,6 +93,8 @@ export default class Validator extends Worker {
   }
 
   _checkType(field, value, data) {
+    value = field.clean ? field.clean(value, data) : value;
+
     if (field.length) {
       this._checkLength(field, value, data);
     }
