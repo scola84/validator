@@ -93,21 +93,23 @@ export default class Validator extends Worker {
   }
 
   _checkType(field, value, data) {
-    value = field.clean ? field.clean(value, data) : value;
+    if (typeof field.clean === 'function') {
+      value = field.clean(value, data);
+    }
 
-    if (field.length) {
+    if (typeof field.length !== 'undefined') {
       this._checkLength(field, value, data);
     }
 
-    if (field.range) {
+    if (typeof field.range !== 'undefined') {
       this._checkRange(field, value, data);
     }
 
-    if (field.regexp) {
+    if (typeof field.regexp !== 'undefined') {
       this._checkRegexp(field, value, data);
     }
 
-    if (field.custom) {
+    if (typeof field.custom !== 'undefined') {
       this._checkCustom(field, value, data);
     }
 
@@ -117,7 +119,7 @@ export default class Validator extends Worker {
       return this._throwError(field, 'type');
     }
 
-    return field.cast === true ? result : value;
+    return field.cast === true || field.clean === true ? result : value;
   }
 
   _isEmpty(value) {

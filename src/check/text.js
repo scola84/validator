@@ -1,5 +1,13 @@
 export default class TextCheck {
   check(field, value) {
-    return typeof value !== 'string' ? false : value;
+    if (typeof value !== 'string') {
+      return false;
+    }
+
+    if (field.clean) {
+      value = value.trim();
+    }
+
+    return value;
   }
 }
