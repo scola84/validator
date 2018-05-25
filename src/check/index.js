@@ -5,7 +5,7 @@ import FileCheck from './file';
 import FloatCheck from './float';
 import IntegerCheck from './integer';
 import PasswordCheck from './password';
-import RadioCheck from './password';
+import RadioCheck from './radio';
 import SelectCheck from './select';
 import TextCheck from './text';
 import TextareaCheck from './textarea';
