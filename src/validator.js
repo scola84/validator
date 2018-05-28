@@ -19,6 +19,7 @@ export default class Validator extends Worker {
 
     for (let i = 0; i < this._structure.length; i += 1) {
       if (this._structure[i].fields) {
+        this._authorizeFields(this._structure[i].fields, box, data, result);
         this._validateFields(this._structure[i].fields, result);
       }
     }
@@ -34,6 +35,22 @@ export default class Validator extends Worker {
     }
 
     return typeof this._structure !== 'function';
+  }
+
+  _authorizeFields(fields, box, data, result) {
+    let add = null;
+    let field = null;
+
+    for (let i = 0; i < fields.length; i += 1) {
+      field = fields[i];
+      add = typeof field.permission === 'function' ?
+        field.permission(box, data) :
+        true;
+
+      if (add === false) {
+        delete result[field.name];
+      }
+    }
   }
 
   _checkArray(field, value) {
@@ -145,10 +162,11 @@ export default class Validator extends Worker {
     const value = data[field.name];
 
     if (this._isEmpty(value) === true) {
-      if (field.required === true) {
+      if (typeof field.default !== 'undefined') {
+        data[field.name] = typeof field.default === 'function' ?
+          field.default() : field.default;
+      } else if (field.required === true) {
         this._throwError(field, 'empty');
-      } else if (typeof field.default !== 'undefined') {
-        data[field.name] = field.default;
       }
 
       return;
