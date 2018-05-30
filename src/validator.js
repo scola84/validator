@@ -20,7 +20,7 @@ export default class Validator extends Worker {
     for (let i = 0; i < this._structure.length; i += 1) {
       if (this._structure[i].fields) {
         this._authorizeFields(this._structure[i].fields, box, data, result);
-        this._validateFields(this._structure[i].fields, result);
+        this._validateFields(this._structure[i].fields, box, data, result);
       }
     }
 
@@ -158,31 +158,39 @@ export default class Validator extends Worker {
     throw error;
   }
 
-  _validateField(field, data) {
-    const value = data[field.name];
+  _validateField(field, box, data, result) {
+    let value = result[field.name];
 
     if (this._isEmpty(value) === true) {
       if (typeof field.default !== 'undefined') {
-        data[field.name] = typeof field.default === 'function' ?
-          field.default() : field.default;
-      } else if (field.required === true) {
-        this._throwError(field, 'empty');
+        value = typeof field.default === 'function' ?
+          field.default(box, data) : field.default;
       }
 
-      return;
+      if (this._isEmpty(value) === true) {
+        const required = typeof field.required === 'function' ?
+          field.required(box, data) :
+          field.required;
+
+        if (required === true) {
+          this._throwError(field, 'empty');
+        }
+
+        return;
+      }
     }
 
     if (field.array === true) {
-      data[field.name] = this._checkArray(field, value, data);
+      result[field.name] = this._checkArray(field, value, result);
       return;
     }
 
-    data[field.name] = this._checkType(field, value, data);
+    result[field.name] = this._checkType(field, value, result);
   }
 
-  _validateFields(fields, data) {
+  _validateFields(fields, box, data, result) {
     for (let i = 0; i < fields.length; i += 1) {
-      this._validateField(fields[i], data);
+      this._validateField(fields[i], box, data, result);
     }
   }
 }
