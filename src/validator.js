@@ -165,6 +165,7 @@ export default class Validator extends Worker {
       if (typeof field.default !== 'undefined') {
         value = typeof field.default === 'function' ?
           field.default(box, data) : field.default;
+        result[field.name] = value;
       }
 
       if (this._isEmpty(value) === true) {
