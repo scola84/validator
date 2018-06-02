@@ -7,6 +7,7 @@ import IntegerCheck from './integer';
 import PasswordCheck from './password';
 import RadioCheck from './radio';
 import SelectCheck from './select';
+import TelCheck from './tel';
 import TextCheck from './text';
 import TextareaCheck from './textarea';
 
@@ -20,6 +21,7 @@ export default {
   password: new PasswordCheck(),
   radio: new RadioCheck(),
   select: new SelectCheck(),
+  tel: new TelCheck(),
   text: new TextCheck(),
   textarea: new TextareaCheck()
 };

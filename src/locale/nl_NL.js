@@ -23,6 +23,7 @@ export default {
       file: 'een geldig bestand',
       integer: 'een geheel getal',
       select: 'ingevuld',
+      tel: 'een telefoonnummer',
       text: 'een tekst',
       textarea: 'een tekst'
     }
