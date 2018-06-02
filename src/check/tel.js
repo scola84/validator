@@ -1,6 +1,5 @@
 import {
   formatNumber,
-  isValidNumber,
   parseNumber
 } from 'libphonenumber-js';
 
@@ -10,16 +9,18 @@ export default class TelCheck {
       return false;
     }
 
-    const [, country] = (data.locale || '').split('_');
+    const [, country = ''] = (data.locale || '').split('_');
 
-    if (typeof country !== 'string' && country.length !== 2) {
+    const number = parseNumber(value, country, { extended: true });
+
+    if (typeof number.valid === 'undefined') {
       return false;
     }
 
-    if (isValidNumber(value, country) === false) {
+    if (number.valid === false && field.strict !== false) {
       return false;
     }
 
-    return formatNumber(parseNumber(value, country), 'E.164');
+    return formatNumber(number, 'E.164');
   }
 }
