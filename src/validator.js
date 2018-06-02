@@ -146,7 +146,7 @@ export default class Validator extends Worker {
   }
 
   _throwError(field, reason) {
-    const error = new Error('400');
+    const error = new Error('400 Input not valid');
 
     error.field = field;
     error.reason = reason;

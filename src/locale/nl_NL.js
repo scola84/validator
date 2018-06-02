@@ -25,7 +25,8 @@ export default {
       select: 'ingevuld',
       tel: 'een telefoonnummer',
       text: 'een tekst',
-      textarea: 'een tekst'
+      textarea: 'een tekst',
+      zip: 'een postcode'
     }
   }
 };

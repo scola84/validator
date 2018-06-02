@@ -10,6 +10,7 @@ import SelectCheck from './select';
 import TelCheck from './tel';
 import TextCheck from './text';
 import TextareaCheck from './textarea';
+import ZipCheck from './zip';
 
 export default {
   date: new DateCheck(),
@@ -23,5 +24,6 @@ export default {
   select: new SelectCheck(),
   tel: new TelCheck(),
   text: new TextCheck(),
-  textarea: new TextareaCheck()
+  textarea: new TextareaCheck(),
+  zip: new ZipCheck()
 };
