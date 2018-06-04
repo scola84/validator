@@ -44,7 +44,7 @@ export default class Validator extends Worker {
     for (let i = 0; i < fields.length; i += 1) {
       field = fields[i];
       add = typeof field.permission === 'function' ?
-        field.permission(box, data) :
+        field.permission(box, result) :
         true;
 
       if (add === false) {
