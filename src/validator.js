@@ -44,7 +44,7 @@ export default class Validator extends Worker {
     for (let i = 0; i < fields.length; i += 1) {
       field = fields[i];
       add = typeof field.permission === 'function' ?
-        field.permission(box, result) :
+        field.permission(box, data) :
         true;
 
       if (add === false) {
@@ -65,10 +65,10 @@ export default class Validator extends Worker {
     return value;
   }
 
-  _checkCustom(field, value, data) {
-    const result = field.custom(value, data);
+  _checkCustom(field, value, result) {
+    const checked = field.custom(value, result);
 
-    if (result === false) {
+    if (checked === false) {
       this._throwError(field, 'custom');
     }
   }
@@ -109,34 +109,34 @@ export default class Validator extends Worker {
     }
   }
 
-  _checkType(field, value, data) {
+  _checkType(field, value, result) {
     if (typeof field.clean === 'function') {
-      value = field.clean(value, data);
+      value = field.clean(value, result);
     }
 
     if (typeof field.length !== 'undefined') {
-      this._checkLength(field, value, data);
+      this._checkLength(field, value);
     }
 
     if (typeof field.range !== 'undefined') {
-      this._checkRange(field, value, data);
+      this._checkRange(field, value);
     }
 
     if (typeof field.regexp !== 'undefined') {
-      this._checkRegexp(field, value, data);
+      this._checkRegexp(field, value);
     }
 
     if (typeof field.custom !== 'undefined') {
-      this._checkCustom(field, value, data);
+      this._checkCustom(field, value, result);
     }
 
-    const result = check[field.type].check(field, value, data);
+    const checked = check[field.type].check(field, value, result);
 
-    if (result === false) {
+    if (checked === false) {
       return this._throwError(field, 'type');
     }
 
-    return field.cast === true || field.clean === true ? result : value;
+    return field.cast === true || field.clean === true ? checked : value;
   }
 
   _isEmpty(value) {
@@ -164,7 +164,7 @@ export default class Validator extends Worker {
     if (this._isEmpty(value) === true) {
       if (typeof field.default !== 'undefined') {
         value = typeof field.default === 'function' ?
-          field.default(box, data) : field.default;
+          field.default(box, result) : field.default;
         result[field.name] = value;
       }
 
