@@ -45,7 +45,7 @@ export default class Validator extends Worker {
       field = fields[i];
 
       add = typeof field.permission !== 'undefined' ?
-        this._hasPermission(box, data, field.permission) :
+        box.user && box.user.may(field.permission, box, data) :
         true;
 
       if (add === false) {
@@ -140,31 +140,6 @@ export default class Validator extends Worker {
     return field.cast === true || field.clean === true ? checked : value;
   }
 
-  _hasPermission(box, data, permission) {
-    if (typeof permission === 'string' || Array.isArray(permission)) {
-      return box.user.may(permission);
-    }
-
-    if (typeof permission === 'function') {
-      return permission(box, data);
-    }
-
-    if (typeof permission.scope !== 'undefined') {
-      let found = false;
-
-      const scope = data && data.meta && data.meta.scope ||
-        data && data.data && data.data.scope;
-
-      for (let i = 0; i < permission.scope.length; i += 1) {
-        found = found || scope === permission.scope[i];
-      }
-
-      return box.user.may(permission.name) && found;
-    }
-
-    return box.user.may(permission.name);
-  }
-
   _isEmpty(value) {
     return typeof value === 'undefined' ||
       value === null ||
@@ -198,7 +173,7 @@ export default class Validator extends Worker {
         let required = field.required;
 
         if (typeof field.permission !== 'undefined') {
-          required = this._hasPermission(box, data, field.permission) ?
+          required = box.user && box.user.may(field.permission, box, data) ?
             required : false;
         }
 
