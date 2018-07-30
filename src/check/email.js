@@ -19,6 +19,12 @@ export default class EmailCheck extends TextCheck {
       return false;
     }
 
+    if (field.clean) {
+      value = value
+        .trim()
+        .toLowerCase();
+    }
+
     return value;
   }
 
