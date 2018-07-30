@@ -172,6 +172,10 @@ export default class Validator extends Worker {
       if (this._isEmpty(value) === true) {
         let required = field.required;
 
+        if (typeof required === 'function') {
+          required = required(box, data);
+        }
+
         if (typeof field.permission !== 'undefined') {
           required = box.user && box.user.may(field.permission, box, data) ?
             required : false;
