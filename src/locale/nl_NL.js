@@ -20,7 +20,8 @@ export default {
     type: {
       date: 'een datum',
       email: 'een e-mailadres',
-      file: 'een geldig bestand',
+      file: 'een bestand',
+      iban: 'een rekeningnummer',
       integer: 'een geheel getal',
       select: 'ingevuld',
       tel: 'een telefoonnummer',
