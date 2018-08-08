@@ -1,6 +1,6 @@
 {
   "name": "@scola/validator",
-  "version": "11.3.4",
+  "version": "11.3.5",
   "description": "Validator",
   "repository": "github:scola84/validator",
   "author": "M.C. van den Boogaart <scola@kvdb.name>",
