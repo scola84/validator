@@ -54,13 +54,13 @@ export default class Validator extends Worker {
     }
   }
 
-  _checkArray(field, value) {
+  _checkArray(field, value, result) {
     if (Array.isArray(value) === false) {
-      return this._throwError(field, 'array');
+      return this._throwError(field, 'array', result);
     }
 
     for (let i = 0; i < value.length; i += 1) {
-      value[i] = this._checkType(field, value[i]);
+      value[i] = this._checkType(field, value[i], result);
     }
 
     return value;
@@ -70,61 +70,57 @@ export default class Validator extends Worker {
     const checked = field.custom(value, result);
 
     if (checked === false) {
-      this._throwError(field, 'custom');
+      this._throwError(field, 'custom', result);
     }
   }
 
-  _checkLength(field, value) {
+  _checkLength(field, value, result) {
     value = String(value);
     const [min, max] = String(field.length).split('-');
 
     if (typeof max === 'undefined' && value.length !== Number(min)) {
-      this._throwError(field, 'length');
+      this._throwError(field, 'length', result);
     }
 
     if (min && value.length < Number(min)) {
-      this._throwError(field, 'length');
+      this._throwError(field, 'length', result);
     }
 
     if (max && value.length > Number(max)) {
-      this._throwError(field, 'length');
+      this._throwError(field, 'length', result);
     }
   }
 
-  _checkRange(field, value) {
+  _checkRange(field, value, result) {
     value = String(value);
     const [min, max] = field.range;
 
     if (min !== null && Number(value) < min) {
-      this._throwError(field, 'range');
+      this._throwError(field, 'range', result);
     }
 
     if (max !== null && Number(value) > max) {
-      this._throwError(field, 'range');
+      this._throwError(field, 'range', result);
     }
   }
 
-  _checkRegexp(field, value) {
+  _checkRegexp(field, value, result) {
     if (field.regexp.test(value) === false) {
-      this._throwError(field, 'regexp');
+      this._throwError(field, 'regexp', result);
     }
   }
 
   _checkType(field, value, result) {
-    if (typeof field.clean === 'function') {
-      value = field.clean(value, result);
-    }
-
     if (typeof field.length !== 'undefined') {
-      this._checkLength(field, value);
+      this._checkLength(field, value, result);
     }
 
     if (typeof field.range !== 'undefined') {
-      this._checkRange(field, value);
+      this._checkRange(field, value, result);
     }
 
     if (typeof field.regexp !== 'undefined') {
-      this._checkRegexp(field, value);
+      this._checkRegexp(field, value, result);
     }
 
     if (typeof field.custom !== 'undefined') {
@@ -134,7 +130,7 @@ export default class Validator extends Worker {
     const checked = check[field.type].check(field, value, result);
 
     if (checked === false) {
-      return this._throwError(field, 'type');
+      return this._throwError(field, 'type', result);
     }
 
     return field.cast === true || field.clean === true ? checked : value;
@@ -146,11 +142,12 @@ export default class Validator extends Worker {
       value === '';
   }
 
-  _throwError(field, reason) {
+  _throwError(field, reason, result) {
     const error = new Error('400 Input not valid');
 
     error.field = field;
     error.reason = reason;
+    error.result = result;
 
     if (field.type === 'checkbox' || field.type === 'radio') {
       delete error.reason;
@@ -161,6 +158,10 @@ export default class Validator extends Worker {
 
   _validateField(field, box, data, result) {
     let value = result[field.name];
+
+    if (typeof field.clean === 'function') {
+      value = field.clean(value, result);
+    }
 
     if (this._isEmpty(value) === true) {
       if (typeof field.default !== 'undefined') {
@@ -182,7 +183,7 @@ export default class Validator extends Worker {
         }
 
         if (required === true) {
-          this._throwError(field, 'empty');
+          this._throwError(field, 'empty', result);
         }
 
         return;
