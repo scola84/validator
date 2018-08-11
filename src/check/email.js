@@ -9,7 +9,11 @@ export default class EmailCheck extends TextCheck {
       return super.check(field, value);
     }
 
-    const [local = '', domain = ''] = value.split('@');
+    if (value.trim().match(/\s/) !== null) {
+      return false;
+    }
+
+    const [local = '', domain = ''] = value.trim().split('@');
 
     if (local.length === 0) {
       return false;
