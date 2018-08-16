@@ -5,8 +5,16 @@ export default class Validator extends Worker {
   constructor(options = {}) {
     super(options);
 
+    this._extract = null;
     this._structure = null;
+
+    this.setExtract(options.extract);
     this.setStructure(options.structure);
+  }
+
+  setExtract(value = (s) => s) {
+    this._extract = value;
+    return this;
   }
 
   setStructure(value = null) {
@@ -16,11 +24,12 @@ export default class Validator extends Worker {
 
   act(box, data, callback) {
     const result = this.filter(box, data);
+    const structure = this._extract(box.structure || this._structure);
 
-    for (let i = 0; i < this._structure.length; i += 1) {
-      if (this._structure[i].fields) {
-        this._authorizeFields(this._structure[i].fields, box, data, result);
-        this._validateFields(this._structure[i].fields, box, data, result);
+    for (let i = 0; i < structure.length; i += 1) {
+      if (structure[i].fields) {
+        this._authorizeFields(structure[i].fields, box, data, result);
+        this._validateFields(structure[i].fields, box, data, result);
       }
     }
 
