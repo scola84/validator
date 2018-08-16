@@ -8,9 +8,9 @@
   "main": "./index.js",
   "jsnext:main": "./index.js",
   "dependencies": {
-    "@scola/worker": "^2.6.2",
+    "@scola/worker": "^2.6.4",
     "iban": "0.0.10",
-    "libphonenumber-js": "^1.3.1",
+    "libphonenumber-js": "^1.4.2",
     "postal-codes-js": "^2.0.0"
   }
 }
