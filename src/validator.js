@@ -172,6 +172,10 @@ export default class Validator extends Worker {
       value = field.clean(value, result);
     }
 
+    if (this._log === 'check') {
+      console.log(field.name, value);
+    }
+
     if (this._isEmpty(value) === true) {
       if (typeof field.default !== 'undefined') {
         value = typeof field.default === 'function' ?
