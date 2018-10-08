@@ -24,7 +24,11 @@ export default class Validator extends Worker {
 
   act(box, data, callback) {
     const result = this.filter(box, data);
-    const structure = this._extract(box.structure || this._structure);
+    let structure = this._extract(box.structure || this._structure);
+
+    if (typeof structure === 'function') {
+      structure = structure(box, data);
+    }
 
     for (let i = 0; i < structure.length; i += 1) {
       if (structure[i].fields) {
@@ -43,7 +47,7 @@ export default class Validator extends Worker {
       return this._decide(box, data);
     }
 
-    return typeof this._structure !== 'function';
+    return true;
   }
 
   _authorizeFields(fields, box, data, result) {
