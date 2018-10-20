@@ -89,30 +89,26 @@ export default class Validator extends Worker {
 
   _checkLength(field, value, result) {
     value = String(value);
-    const [min, max] = String(field.length).split('-');
+    const [min = null, max = null] = field.length;
 
-    if (typeof max === 'undefined' && value.length !== Number(min)) {
+    if (min !== null && value.length < Number(min)) {
       this._throwError(field, 'length', result);
     }
 
-    if (min && value.length < Number(min)) {
-      this._throwError(field, 'length', result);
-    }
-
-    if (max && value.length > Number(max)) {
+    if (max !== null && value.length > Number(max)) {
       this._throwError(field, 'length', result);
     }
   }
 
   _checkRange(field, value, result) {
-    value = String(value);
-    const [min, max] = field.range;
+    value = Number(value);
+    const [min = null, max = null] = field.range;
 
-    if (min !== null && Number(value) < min) {
+    if (min !== null && value < min) {
       this._throwError(field, 'range', result);
     }
 
-    if (max !== null && Number(value) > max) {
+    if (max !== null && value > max) {
       this._throwError(field, 'range', result);
     }
   }
