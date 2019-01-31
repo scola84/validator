@@ -151,6 +151,20 @@ export default class Validator extends Worker {
       value === '';
   }
 
+  _setDefault(field, box, data, result, value) {
+    let def = field.default;
+
+    if (typeof def === 'function') {
+      def = def(box, result, value);
+    }
+
+    if (typeof def === 'object' && def !== null) {
+      def = def[value];
+    }
+
+    return def;
+  }
+
   _throwError(field, reason, result) {
     const error = new Error('400 Input not valid');
 
@@ -178,8 +192,7 @@ export default class Validator extends Worker {
 
     if (this._isEmpty(value) === true) {
       if (typeof field.default !== 'undefined') {
-        value = typeof field.default === 'function' ?
-          field.default(box, result) : field.default;
+        value = this._setDefault(field, box, data, result, value);
         result[field.name] = value;
       }
 
@@ -191,8 +204,10 @@ export default class Validator extends Worker {
         }
 
         if (typeof field.permission !== 'undefined') {
-          required = box.user && box.user.may(field.permission, box, data) ?
-            required : false;
+          required = box.user &&
+            box.user.may(field.permission, box, data) ?
+            required :
+            false;
         }
 
         if (required === true) {
