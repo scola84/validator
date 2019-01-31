@@ -151,6 +151,12 @@ export default class Validator extends Worker {
       value === '';
   }
 
+  _isObject(value) {
+    return typeof value === 'object' &&
+      Array.isArray(value) === false &&
+      value !== null;
+  }
+
   _setDefault(field, box, data, result, value) {
     let def = field.default;
 
@@ -158,7 +164,7 @@ export default class Validator extends Worker {
       def = def(box, result, value);
     }
 
-    if (typeof def === 'object' && def !== null) {
+    if (this._isObject(def) === true) {
       def = def[value];
     }
 
