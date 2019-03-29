@@ -2,6 +2,18 @@ import { Worker } from '@scola/worker';
 import check from './check';
 
 export default class Validator extends Worker {
+  static isEmpty(value) {
+    return typeof value === 'undefined' ||
+      value === null ||
+      value === '';
+  }
+
+  static isObject(value) {
+    return typeof value === 'object' &&
+      Array.isArray(value) === false &&
+      value !== null;
+  }
+
   constructor(options = {}) {
     super(options);
 
@@ -145,18 +157,6 @@ export default class Validator extends Worker {
     return field.cast === true || field.clean === true ? checked : value;
   }
 
-  _isEmpty(value) {
-    return typeof value === 'undefined' ||
-      value === null ||
-      value === '';
-  }
-
-  _isObject(value) {
-    return typeof value === 'object' &&
-      Array.isArray(value) === false &&
-      value !== null;
-  }
-
   _setDefault(field, box, data, result, value) {
     let def = field.default;
 
@@ -164,7 +164,7 @@ export default class Validator extends Worker {
       def = def(box, result, value);
     }
 
-    if (this._isObject(def) === true) {
+    if (Validator.isObject(def) === true) {
       def = def[value];
     }
 
@@ -196,13 +196,13 @@ export default class Validator extends Worker {
       console.log(field.name, value);
     }
 
-    if (this._isEmpty(value) === true) {
+    if (Validator.isEmpty(value) === true) {
       if (typeof field.default !== 'undefined') {
         value = this._setDefault(field, box, data, result, value);
         result[field.name] = value;
       }
 
-      if (this._isEmpty(value) === true) {
+      if (Validator.isEmpty(value) === true) {
         let required = field.required;
 
         if (typeof required === 'function') {
