@@ -44,6 +44,12 @@ export default class Validator extends Worker {
 
     for (let i = 0; i < structure.length; i += 1) {
       if (structure[i].fields) {
+        this._setDefaults(structure[i].fields, box, data, result);
+      }
+    }
+
+    for (let i = 0; i < structure.length; i += 1) {
+      if (structure[i].fields) {
         this._authorizeFields(structure[i].fields, box, data, result);
         this._validateFields(structure[i].fields, box, data, result);
       }
@@ -157,7 +163,17 @@ export default class Validator extends Worker {
     return field.cast === true || field.clean === true ? checked : value;
   }
 
-  _setDefault(field, box, data, result, value) {
+  _setDefault(field, box, data, result) {
+    if (typeof field.default === 'undefined') {
+      return;
+    }
+
+    const value = result[field.name];
+
+    if (Validator.isEmpty(value) === false) {
+      return;
+    }
+
     let def = field.default;
 
     if (typeof def === 'function') {
@@ -168,7 +184,13 @@ export default class Validator extends Worker {
       def = def[value];
     }
 
-    return def;
+    result[field.name] = def;
+  }
+
+  _setDefaults(fields, box, data, result) {
+    for (let i = 0; i < fields.length; i += 1) {
+      this._setDefault(fields[i], box, data, result);
+    }
   }
 
   _throwError(field, reason, result) {
@@ -197,31 +219,24 @@ export default class Validator extends Worker {
     }
 
     if (Validator.isEmpty(value) === true) {
-      if (typeof field.default !== 'undefined') {
-        value = this._setDefault(field, box, data, result, value);
-        result[field.name] = value;
+      let required = field.required;
+
+      if (typeof required === 'function') {
+        required = required(box, data);
       }
 
-      if (Validator.isEmpty(value) === true) {
-        let required = field.required;
-
-        if (typeof required === 'function') {
-          required = required(box, data);
-        }
-
-        if (typeof field.permission !== 'undefined') {
-          required = box.user &&
-            box.user.may(field.permission, box, data) ?
-            required :
-            false;
-        }
-
-        if (required === true) {
-          this._throwError(field, 'empty', result);
-        }
-
-        return;
+      if (typeof field.permission !== 'undefined') {
+        required = box.user &&
+          box.user.may(field.permission, box, data) ?
+          required :
+          false;
       }
+
+      if (required === true) {
+        this._throwError(field, 'empty', result);
+      }
+
+      return;
     }
 
     if (field.array === true) {
